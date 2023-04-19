@@ -4,14 +4,11 @@
  */
 package com.example.application.views.main.introduction;
 
-
-import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.OrderedList;
-import com.vaadin.flow.component.messages.MessageListItem;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -164,5 +161,10 @@ public class IntroductionView extends VerticalLayout{
         
         add(new ListItem(new Label("Para crear una aplicacion web Progresiva con Vaadin, todo lo que se tiene que hacer es anotar la clase de la vista con @PWA")));
         
+        var layouting = new Button("Layouting");
+        layouting.addClickListener(event ->{
+            UI.getCurrent().navigate("layouting");
+        });
+        add(layouting);
     }
 }
