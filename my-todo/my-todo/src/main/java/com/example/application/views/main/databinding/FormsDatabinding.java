@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
@@ -24,6 +25,11 @@ import com.vaadin.flow.server.StreamResource;
  */
 @Route(value = "forms_databinding")
 public class FormsDatabinding extends VerticalLayout {
+    
+        private TextField name = new TextField();
+        @PropertyId("birthYear")
+        private IntegerField birthYearField3 = new IntegerField();
+        
     
     public FormsDatabinding() {
         var title = new Label("Forms And Data Binding");
@@ -127,8 +133,9 @@ public class FormsDatabinding extends VerticalLayout {
         text_area = new TextArea();
         text_area.setReadOnly(true);
         text_area.setWidthFull();
-        text_area.setValue("Binder<Person> binder = new Binder<>();\n" +
-        "\n" +
+        text_area.setValue(" var person = new Person();\n" +
+        "Binder<Person> binder = new Binder<>();\n" +
+        " binder.setBean(person);\n\n" +
         "TextFiled textField1 = new TextField();\n" +
         "IntegerField birthYearField = new IntegerField();\n" +
         "\n" +
@@ -153,19 +160,122 @@ public class FormsDatabinding extends VerticalLayout {
         // A su vez es un objeto de tipo Person 
          button.addClickListener(event ->{
              var person_aux = binder.getBean();
-             Notification.show("Componente: "+ textField1.getValue() +" Objeto: "+person_aux.getTitle());
-             Notification.show("Componente: "+String.valueOf(birthYearField.getValue()) + "Objeto: "+person_aux.getBirthYear()  );
+             Notification.show("Componente: "+ textField1.getValue() +" Objeto Person: "+person_aux.getTitle());
+             Notification.show("Componente: "+String.valueOf(birthYearField.getValue()) + " Objeto Person: "+person_aux.getBirthYear()  );
         });
         add(textField1);
         add(birthYearField);
         add(button);
         
-        title = new Label("Binder con property name aqui me quede ");
+        title = new Label("Binder con property name");
         title.getStyle().set("fontWeight", "bold");
         add(title);
         
+        add(new ListItem(new Label("Se puede mapear los componentes con los objetos indicando la propiedad en formato string de la siguiente forma:")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue(" var person2 = new Person();\n" +
+        "var binder2 = new Binder<Person>(Person.class);\n" +
+        " binder2.setBean(person2);\n\n" +
+        "var textField2 = new TextField();\n" +
+        "var birthYearField2 = new IntegerField();\n" +
+        "\n" +
+        "binder2.forField(textField2).bind(\"title\");\n" +
+        "binder2.forField(birthYearField2).bind(\"birthYear\");");
+        add(text_area);
         
-        add(new ListItem(new Label("")));
+        var person2 = new Person();
+        var binder2 = new Binder<Person>(Person.class);
+        binder2.setBean(person2);
+        
+        var textField2 = new TextField();
+        var birthYearField2 = new IntegerField();
+        binder2.forField(textField2).bind("title");
+        binder2.forField(birthYearField2).bind("birthYear");
+        
+        var button2 = new Button("Show values 2");
+        button2.addClickListener(event ->{
+             var person_aux = binder2.getBean();
+             Notification.show("Componente: "+ textField2.getValue() +" Objeto Person: "+person_aux.getTitle());
+             Notification.show("Componente: "+String.valueOf(birthYearField2.getValue()) + " Objeto Person: "+person_aux.getBirthYear()  );
+        });
+        add(textField2);
+        add(birthYearField2);
+        add(button2);
+        
+        title = new Label("Automatic Bindings Minute");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Se puede crear un binding automatico, para eso se debe tener en cuenta que ")));
+        add(new ListItem(new Label("Los componentes graficos deben ser instancias de clase.")));
+        add(new ListItem(new Label("Deben de coincidir el nombre de la variable de los componentes graficos con el nombre de la propiedad del objeto ")));
+        add(new ListItem(new Label("En caso de que no coincidan, se puede anotar el componente grafico con la anotación @PropertyId")));
+        
+        var binder3 = new Binder<Person>(Person.class);
+        var person3 = new Person();
+        binder3.setBean(person3);
+        binder3.bindInstanceFields(this);
+        
+        var button3 = new Button("Show values 3");
+        button3.addClickListener(event ->{
+             var person_aux = binder3.getBean();
+             Notification.show("Componente: "+ name.getValue() +" Objeto Person: "+person_aux.getName());
+             Notification.show("Componente: "+String.valueOf(birthYearField3.getValue()) + " Objeto Person: "+person_aux.getBirthYear()  );
+        });
+        
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("private TextField name = new TextField();\n"
+        + " @PropertyId(\"birthYear\")"
+        + "private IntegerField birthYearField3 = new IntegerField();\n"  
+        + "var binder3 = new Binder<Person>(Person.class);\n" +
+        "var person3 = new Person();\n" +
+        " binder3.setBean(person3)\n\n" +
+        "var textField2 = new TextField();\n" +
+        "var birthYearField2 = new IntegerField();\n" +
+        "\n" +
+        "binder3.bindInstanceFields(this);\n" );
+        add(text_area);
+        
+        add(name);
+        add(birthYearField3);
+        add(button3);
+        
+        title = new Label("Binder para Objetos anidados ");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        source = new StreamResource("photo", () ->
+            getClass().getClassLoader().getResourceAsStream("./images/chapter3/IMG_2.png")
+        );
+        
+        image = new Image(source, "img 2");
+        add(image);
+        
+        title = new Label(" Reading and writing values. ");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Si se desea actualizar de forma manual los valores entre los componentes gráficos y el binder se pueden utilizar los metodos readBean y writeBean")));
+        add(new ListItem(new Label("readBean permite leer los valores de la instancia persona a el binder")));
+        add(new ListItem(new Label("writeBean permite escribir valores del binder a la instancia del objeto persona ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("Person person = getPerson();\n"
+                + "Binder<Person> binder = new Binder<>();"
+                + "\n"
+                + "binder.readBean(person); //Lee valores de la instancia de persona a el binder \n"
+                + "Button saveButton = new Button(\"Save\", event ->{\n"
+                + "  try{\n"
+                + "    binder.writeBean(person); //Escribe valores del binder al objeto Persona \n"
+                + "  }catch(ValidationException ex){\n"
+                + " }"
+                + "});" );
+        add(text_area);
+        
         add(new ListItem(new Label("")));
         add(new ListItem(new Label("")));
         
