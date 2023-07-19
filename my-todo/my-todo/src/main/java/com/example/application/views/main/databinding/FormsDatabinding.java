@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -16,6 +17,8 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.PropertyId;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
@@ -276,8 +279,161 @@ public class FormsDatabinding extends VerticalLayout {
                 + "});" );
         add(text_area);
         
-        add(new ListItem(new Label("")));
-        add(new ListItem(new Label("")));
+        title = new Label(" Validations. ");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Cuando una validación de un campo falla, este campo regresa un mensaje en color rojo y lo muestra")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("// Validacion con un validador explicito\n"
+                + "binder. forField(emailField).withValidator(new EmailValidator(\"This doesnt look like a valid email address\").bind(Person::getEmail, Person::setEmail));");
+        add(text_area);
+        
+        var emailField = new TextField();
+        var binder_email = new Binder<Person>(Person.class);
+        var person4 = new Person();
+        binder_email.setBean(person4);
+        binder_email.forField(emailField).withValidator(new EmailValidator("This doesnt look like a valid email address"))
+                .bind(Person::getEmail, Person::setEmail);
+        add(emailField);
+        
+        add(new ListItem(new Label("Validación para campos requeridos")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("binder.forField(titleField).asRequired(\"Every employee must have a title\").bind(Person::getTitle, Person::setTitle);");
+        add(text_area);
+        
+        var title_field = new TextField();
+        var binder_required = new Binder<Person>(Person.class);
+        var person5 = new Person();
+        binder_required.setBean(person5);
+        binder_required.forField(title_field).asRequired("Every employee must have a title")
+                .bind(Person::getTitle, Person::setTitle);
+        add(title_field);
+        
+        title = new Label(" Validator API. ");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("La interface Validator trabaja con dos interfaces:")));
+        add(new ListItem(new Label("1. ValueContext")));
+        add(new ListItem(new Label("2. ValidationResult")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("public interface Validator<T>{\n"
+                + "    @override\n"
+                + "    ValidationResult apply(T value, ValueContext context);\n"
+                + "}");
+        add(text_area);
+        add(new ListItem(new Label("Esto nos permite crear nuestros propios validadores customizados por ejemplo ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("public class MyValidator implements Valdiator<String>{\n\n"
+                + "@Override\n"
+                + "    public ValidationResult apply(String value, ValueContext context ){\n"
+                + "        if(value==null || value.lenght() < <3){\n"
+                + "            return ValidationResult.error(\"String is too short\");\n"
+                + "        }else{\n"
+                + "            return ValidationResult.ok();\n"
+                + " }\n"
+                + " }\n"
+                + " }");
+        add(text_area);
+        
+        add(new ListItem(new Label("Existen validadores ya construidos por ejemplo ")));
+        source = new StreamResource("photo", () ->
+            getClass().getClassLoader().getResourceAsStream("./images/chapter3/IMG_3.png")
+        );
+        
+        image = new Image(source, "img 3");
+        add(image);
+        
+        title = new Label(" Pendiente de revision el tema BeanValidation (JSR-303) y métodos withStatusLabel");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        add(new ListItem(new Label("***************************************************************************")));
+        
+        title = new Label(" Validaciones del lado del cliente");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Estas validaciones no necesitan un binder, si no que se validan directamente en el componente ")));
+        add(new ListItem(new Label("Es recomendable que si estas validaciones estan de lado del cliente no implementar el binder o viceversa")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("TextField text = new TextField(\"Name\");\n"
+                + "name.setRequired(true);\n"
+                + "name.setMinLength(2);\n"
+                + "name.setMaxLength(4);\n"
+                + "name.setErrorMessage(\"2 to 4 letters\");");
+        add(text_area);
+        
+        TextField text = new TextField("Name");
+        name.setRequired(true);
+        name.setMinLength(2);
+        name.setMaxLength(4);
+        name.setErrorMessage("2 to 4 letters");
+        add(text);
+        
+        title = new Label(" Conversations");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        add(new ListItem(new Label("Cuando no se puede mapear el valor de un componente por que son de diferentes tipos obtendremos una exception en el binder, por ejemplo ")));
+        
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("TextField age  = new TextField(\"Age\");\n"
+                + "Binder<Person> binder = new Binder<>(Person.class);\n"
+                + "binder.bind(age, \"age\");\n"
+                + "public class Person{\n"
+                + "    private int age;\n"
+                + "}\n");
+        add(text_area);
+        
+        add(new ListItem(new Label("El codigo de arriba nos arrojara una exception como esta ")));
+        add(new ListItem(new Label("Porque el contenido de un textfield es un string y la propiedad age es un entero ")));
+        source = new StreamResource("photo", () ->
+            getClass().getClassLoader().getResourceAsStream("./images/chapter3/IMG_4.png")
+        );
+        
+        image = new Image(source, "img 4");
+        add(image);
+        
+        
+        TextField age  = new TextField("Age");
+        Binder<Person> binder_age = new Binder<>(Person.class);
+        binder_age.bind(age, "age");
+        add(age);
+        
+        add(new ListItem(new Label("Para que se mapee el valor correcto necesitamos realizar una conversion ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("TextField age  = new TextField(\"Age\");\n"
+                + "Binder<Person> binder = new Binder<>(Person.class);\n"
+                + "binder.forField(age).withConverter(new StringToIntegerConverter(\"Must enter a number\")).bind(\"age\");\n");
+        add(text_area);
+        
+        
+        var age_2  = new TextField("Age");
+        var binder_age_2 = new Binder<>(Person.class);
+        binder_age_2.forField(age_2).withConverter(new StringToIntegerConverter("Must enter a number")).bind("age");
+        add(age_2);
+        
+        add(new ListItem(new Label("Algunos convertidores que tiene vaadin son: ")));
+        source = new StreamResource("photo", () ->
+            getClass().getClassLoader().getResourceAsStream("./images/chapter3/IMG_5.png")
+        );
+        
+        image = new Image(source, "img 5");
+        add(image);
         
     }
 }

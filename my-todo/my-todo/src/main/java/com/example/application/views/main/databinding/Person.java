@@ -4,6 +4,8 @@
  */
 package com.example.application.views.main.databinding;
 
+import jakarta.validation.constraints.Size;
+
 /**
  *
  * @author Lenovo
@@ -13,7 +15,30 @@ public class Person {
     private int birthYear;
     private String name;
     private String email;
+    private int age;
+    
+    @Size(min=4, message="Al menos cuatro carácteres")
+    private String emailTest;
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    
+    
+    public String getEmailTest() {
+        return emailTest;
+    }
+
+    public void setEmailTest(String emailTest) {
+        this.emailTest = emailTest;
+    }
+
+    
     public String getTitle() {
         return title;
     }

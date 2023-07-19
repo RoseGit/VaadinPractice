@@ -22,12 +22,24 @@ public class MainView extends HorizontalLayout {
         sayHello.addClickListener(e -> {
             UI.getCurrent().navigate("introduction");
         });
+        var layouting = new Button("Layouting");
+        layouting.addClickListener(event ->{
+            UI.getCurrent().navigate("layouting");
+        });
+        var forms_databinding = new Button("Forms and databinding");
+        forms_databinding.addClickListener(event ->{
+            UI.getCurrent().navigate("forms_databinding");
+        });
+        
+        
         sayHello.addClickShortcut(Key.ENTER);
 
         setMargin(true);
         setVerticalComponentAlignment(Alignment.END, sayHello);
 
         add(sayHello);
+        add(layouting);
+        add(forms_databinding);
     }
 
 }
