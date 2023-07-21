@@ -2,10 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.application.views.main.databinding;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+package com.example.application.views.main.datalistgrid;
 
 /**
  *
@@ -17,39 +14,20 @@ public class Person {
     private String name;
     private String email;
     private int age;
-    private String emailTest;
+
+    public Person() {
+    }
     
-    @NotBlank(message="no vacio pplease ")
-    @Size(max= 3, message="3 caracteres maximo")
-    private String lastName;
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
+    public Person(String title, int birthYear, String name, String email, int age) {
+        this.title = title;
+        this.birthYear = birthYear;
+        this.name = name;
+        this.email = email;
         this.age = age;
     }
-
     
     
-    public String getEmailTest() {
-        return emailTest;
-    }
 
-    public void setEmailTest(String emailTest) {
-        this.emailTest = emailTest;
-    }
-
-    
     public String getTitle() {
         return title;
     }
@@ -82,10 +60,12 @@ public class Person {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" + "title=" + title + ", birthYear=" + birthYear + ", name=" + name + ", email=" + email + '}';
+    public int getAge() {
+        return age;
     }
-    
+
+    public void setAge(int age) {
+        this.age = age;
+    }
     
 }

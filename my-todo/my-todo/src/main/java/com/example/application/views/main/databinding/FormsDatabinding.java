@@ -353,10 +353,70 @@ public class FormsDatabinding extends VerticalLayout {
         image = new Image(source, "img 3");
         add(image);
         
-        title = new Label(" Pendiente de revision el tema BeanValidation (JSR-303) y métodos withStatusLabel");
+        add(new ListItem(new Label("***************************************************************************")));
+        title = new Label(" Pendiente de revision el tema BeanValidation (JSR-303)");
         title.getStyle().set("fontWeight", "bold");
         add(title);
+        
+        var x = new Paragraph("");
+        x.getStyle().set("color", "Blue");
+        
+        var last_name = new TextField("Apellido");
+        var binder_last_name = new Binder<Person>(Person.class);
+        var person_last_name = new Person();
+        binder_last_name.setBean(person_last_name);
+        binder_last_name.forField(last_name)
+                .withValidationStatusHandler(status -> {
+                    System.out.println("RoseXXX is here "+status.getMessage() + " is error " +status.isError());
+                    x.setText(status.getMessage().orElse("")); x.setVisible(status.isError()); 
+                })
+                .bind(Person::getLastName, Person::setLastName);
+        add(last_name);
+        add(x);
         add(new ListItem(new Label("***************************************************************************")));
+        
+        
+        title = new Label(" Custom the message error  on validation");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        add(new ListItem(new Label("Mostrar errores precisos sobre componentes se pueden hacer de la siguiente forma ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("var email_test_label = new Paragraph(\"\");\n"
+                + "email_test_label.getStyle().set(\"color\", \"Blue\");\n"
+                + "\n"
+                + "var emailField_test = new TextField(\"email test\");\n"
+                + "var binder_email_test = new Binder<Person>(Person.class);\n"
+                + "var person6 = new Person();\n"
+                + "binder_email_test.setBean(person6);\n"
+                + "binder_email_test.forField(emailField_test)\n"
+                + ".withValidator(new EmailValidator(\"This doesnt look like a valid email addresssdasd\"))\n"
+                + ".withValidationStatusHandler(status -> {\n"
+                + "email_test_label.setText(status.getMessage().orElse(\"\")); email_test_label.setVisible(status.isError()); \n"
+                + "})\n"
+                + ".bind(Person::getEmailTest, Person::setEmailTest);\n"
+                + "add(emailField_test);\n"
+                + "add(email_test_label);\n");
+        add(text_area);
+        
+        var email_test_label = new Paragraph("");
+        email_test_label.getStyle().set("color", "Blue");
+        
+        var emailField_test = new TextField("email test");
+        var binder_email_test = new Binder<Person>(Person.class);
+        var person6 = new Person();
+        binder_email_test.setBean(person6);
+        binder_email_test.forField(emailField_test)
+                .withValidator(new EmailValidator("This doesnt look like a valid email addresssdasd"))
+                .withValidationStatusHandler(status -> {
+                    System.out.println("Rose is here "+status.getMessage() + " is error " +status.isError());
+                    email_test_label.setText(status.getMessage().orElse("")); email_test_label.setVisible(status.isError()); 
+                })
+                .bind(Person::getEmailTest, Person::setEmailTest);
+        add(emailField_test);
+        add(email_test_label);
+        
         
         title = new Label(" Validaciones del lado del cliente");
         title.getStyle().set("fontWeight", "bold");
@@ -375,10 +435,10 @@ public class FormsDatabinding extends VerticalLayout {
         add(text_area);
         
         TextField text = new TextField("Name");
-        name.setRequired(true);
-        name.setMinLength(2);
-        name.setMaxLength(4);
-        name.setErrorMessage("2 to 4 letters");
+        text.setRequired(true);
+        text.setMinLength(2);
+        text.setMaxLength(4);
+        text.setErrorMessage("2 to 4 letters");
         add(text);
         
         title = new Label(" Conversations");
@@ -434,6 +494,12 @@ public class FormsDatabinding extends VerticalLayout {
         
         image = new Image(source, "img 5");
         add(image);
+        
+        var data_list_with_grid = new Button("Data List With Grid");
+        data_list_with_grid.addClickListener(event ->{
+            UI.getCurrent().navigate("data_list_grid");
+        });
+        add(data_list_with_grid);
         
     }
 }

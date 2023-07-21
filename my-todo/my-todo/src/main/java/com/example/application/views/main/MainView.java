@@ -31,6 +31,10 @@ public class MainView extends HorizontalLayout {
             UI.getCurrent().navigate("forms_databinding");
         });
         
+        var data_list_with_grid = new Button("Data List With Grid");
+        data_list_with_grid.addClickListener(event ->{
+            UI.getCurrent().navigate("data_list_grid");
+        });
         
         sayHello.addClickShortcut(Key.ENTER);
 
@@ -40,6 +44,7 @@ public class MainView extends HorizontalLayout {
         add(sayHello);
         add(layouting);
         add(forms_databinding);
+        add(data_list_with_grid);
     }
 
 }
