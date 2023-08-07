@@ -14,6 +14,7 @@ public class Person {
     private String name;
     private String email;
     private int age;
+    private String Descripcion = "Descripcioin de una persona, valor default ";
 
     public Person() {
     }
@@ -25,6 +26,16 @@ public class Person {
         this.email = email;
         this.age = age;
     }
+
+    public String getDescripcion() {
+        return Descripcion;
+    }
+
+    public void setDescripcion(String Descripcion) {
+        this.Descripcion = Descripcion;
+    }
+    
+    
     
     
 

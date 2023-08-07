@@ -36,6 +36,12 @@ public class MainView extends HorizontalLayout {
             UI.getCurrent().navigate("data_list_grid");
         });
         
+        var router_api = new Button("Router API");
+        router_api.addClickListener(event ->{
+            UI.getCurrent().navigate("router_api");
+        });
+        add(router_api);
+        
         sayHello.addClickShortcut(Key.ENTER);
 
         setMargin(true);
@@ -45,6 +51,7 @@ public class MainView extends HorizontalLayout {
         add(layouting);
         add(forms_databinding);
         add(data_list_with_grid);
+        add(router_api);
     }
 
 }

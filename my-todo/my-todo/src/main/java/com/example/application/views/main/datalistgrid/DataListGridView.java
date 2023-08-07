@@ -4,12 +4,17 @@
  */
 package com.example.application.views.main.datalistgrid;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 
@@ -165,6 +170,19 @@ public class DataListGridView extends VerticalLayout{
         add(grid_person_6);
         
         add(new ListItem(new Label("2. asMultiSelect")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("var grid_person_7 = new Grid<Person>(Person.class);\n"
+                + "grid_person_7.setItems(list_persons);\n"
+                + "grid_person_7.setSelectionMode(Grid.SelectionMode.MULTI);\n"
+                + "grid_person_7.addSelectionListener(event -> {\n"
+                + "var selected_person =grid_person_7.getSelectedItems();\n"
+                + "for (var person : selected_person) {\n"
+                + "System.out.println(\"Personas seleccionadas \"+person.getName());\n"
+                + "}\n"
+                + "});\n");
+        add(text_area);
         var grid_person_7 = new Grid<Person>(Person.class);
         grid_person_7.setItems(list_persons);
         grid_person_7.setSelectionMode(Grid.SelectionMode.MULTI);
@@ -176,15 +194,156 @@ public class DataListGridView extends VerticalLayout{
         });
         add(grid_person_7);
         
+        title = new Label("Mostrar mas detalle en la fila del grid ");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Podemos introducir mas detalle en las filas de uin grid de la siguiente forma:")));
+        add(new ListItem(new Label("Al seleccionar una fila, se abrira una nueva con el valor de la descripcion")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("//con ComponentRenderer  se puede construir  cualquier componente Vaadin para renderizar detalles"
+                + "var grid_person_8 = new Grid<Person>(Person.class);"
+                + "grid_person_8.setItems(list_persons);"
+                + "grid_person_8.setItemDetailsRenderer("
+                + "new ComponentRenderer<>(person -> {"
+                + "return new Label(person.getDescripcion());"
+                + "}));"
+                + "\n"
+                + "//Si queremos deshabilitar los detalles de algun componente podemos hacerlo de la siguiente forma \n" +
+                "grid.setDetailsVisibleOnClick(false);\n"
+                + "\n"
+                + "//si queremos que el Grid no permita seleccionar las filas, solo mostrar informacion por ejemplo \n" +
+                "grid.setSelectionMode(SelectionMode.NONE)");
+        add(text_area);
+        
+        //con ComponentRenderer  se puede construir  cualquier componente Vaadin para renderizar detalles
+        var grid_person_8 = new Grid<Person>(Person.class);
+        grid_person_8.setItems(list_persons);
+        grid_person_8.setItemDetailsRenderer(
+                new ComponentRenderer<>(person -> {
+                    return new Label(person.getDescripcion());
+                })
+            );
+        grid_person_8.setSelectionMode(Grid.SelectionMode.NONE);
+        add(grid_person_8);
         
         
+        title = new Label("ComboBox");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
         
-        add(new ListItem(new Label("")));
+        add(new ListItem(new Label("Es un componente de seleccion de informacion")));
         
         text_area = new TextArea();
         text_area.setReadOnly(true);
         text_area.setWidthFull();
-        text_area.setValue("");
+        text_area.setValue("ComboBox<Person> combo = new ComboBox<>();\n"
+                + "\n"
+                + "//Tiene metodos que guardan la informacion en memoria \n"
+                + "combo.setItems();\n"
+                + "\n"
+                + "//Por default las etiquetas de los combobox usan el metodo toString para representar un Item\n"
+                + "//Sin embargo nosotros podemos cambiar este comportamiento \n"
+                + "combo.setItemLabelGenerator(\n"
+                + "    person -> person.getFullName()+\"(\"+person.getEmail+\")\"\n"
+                + ");");
         add(text_area);
+        
+        var combo = new ComboBox<Person>();
+        combo.setItems(list_persons);
+        combo.setItemLabelGenerator(person -> person.getName());
+        add(combo);
+        
+        
+        title = new Label("RadioButton otro componente de seleccion");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue(""
+                + "var options = new RadioButtonGroup<Person>();\n"
+                + "options.setItems(list_persons);\n"
+                + "options.setItemLabelGenerator(person -> person.getName());\n"
+                + "options.addValueChangeListener(e ->{\n"
+                + "Person selectionOption = e.getValue();\n"
+                + "Notification.show(\"Seleccionaste: \"+selectionOption.getName());\n"
+                + "});");
+        add(text_area);
+        
+        var options = new RadioButtonGroup<Person>();
+        options.setItems(list_persons);
+        options.setItemLabelGenerator(person -> person.getName());
+        options.addValueChangeListener(e ->{
+            Person selectionOption = e.getValue();
+            Notification.show("Seleccionaste: "+selectionOption.getName());
+        });
+        add(options);
+        
+        
+        title = new Label("Data Binding and Data providers");
+        title.getStyle().set("fontWeight", "bold");
+        add(title);
+        
+        add(new ListItem(new Label("Cuando utilizamos el metodo grid.setItems() realmente estamos utilizando ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("grid.setDataProvider(DataProvider.ofCollection(items));");
+        add(text_area);
+        
+        
+        add(new ListItem(new Label("La interface DataProvider unifica el API para buscar y para escuchar a los componentes ")));
+        add(new ListItem(new Label("Otorga los metodos de items, getting, size, etc.")));
+        add(new ListItem(new Label("Existen dos formas de cargas los datos ")));
+        add(new ListItem(new Label("1. In Memory")));
+        add(new ListItem(new Label("2. Lazy Load")));
+        add(new ListItem(new Label("In Memory data providers son convenientes para pequeños conjuntos de datos(cientos de datos ) ordenar y filtrar es mucho mas facil ")));
+        add(new ListItem(new Label("ListDataProvider es la interface por default para todos los items cuando se llama al metodo setItems()")));
+        add(new ListItem(new Label("soporta ordenamiento y filtrado ")));
+        add(new ListItem(new Label("Basado en JavaBeans y Collections")));
+        add(new ListItem(new Label("Si quisieramos agregar un comparador para ordenar items podriamos hacer lo siguiente ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("//Ejemplo 1\n"
+                + "dataProvider.setSortComparator(Comparator.comparing(Consultant::getTaxtBracket)::compare);\n"
+                + "\n"
+                + "//Ejemplo 2 \n"
+                + "dataProvider.setSortOrder(Consultant::getProirity, SortDirection.DESCENDING);\n");
+        add(text_area);
+ 
+        
+        
+        add(new ListItem(new Label("Para el tema de filtrado existen dos opciones.")));
+        add(new ListItem(new Label("1. Directamente ")));
+        add(new ListItem(new Label("2 Por query muy parecido a lazy load ")));
+        text_area = new TextArea();
+        text_area.setReadOnly(true);
+        text_area.setWidthFull();
+        text_area.setValue("//Ejemplo para filtrar personas que no tengan email \n"
+                + "dataProvider.setFilter(person -> person.getEmail() != null);\n"
+                + "//Ejemplo 2 \n"
+                + "dataProvider.setFilter(Person::getSalary, salary -> salary >= 50000);\n"
+                + "//Ejemplo 3 Filtrando directamente por un valor \n"
+                + "dataProvider.setFilterByValue(Person::getBirthDate, null);\n");
+        add(text_area);
+        
+        add(new ListItem(new Label("Lazy load data es recomendable para miles de datos y que no se quieran cargar todos esos datos en memoria.")));
+        add(new ListItem(new Label("1. Salvan la memoria pero el costo es la velocidad al mostrar los datos. Estos datos solo se muestran pocos al usuario, cuando el usuario quiere ver mas por ejemplo con el scroll, este manda una peticion al backend para cargar mas datos.")));
+        add(new ListItem(new Label("2. Trabaja dinamicamente el query con dos datos principalmente offset que indica desde que datos quiero cargar y limit es cuantos registros quiero cargar.")));
+        add(new ListItem(new Label("Si se modifica o agrega cualquier dato del provider, el provider NO sabra de ese cambio a menos que se utilize una de estas dos formas:")));
+        add(new ListItem(new Label("1. usar el metodo dataProvider.refreshAll();")));
+        add(new ListItem(new Label("2. usar el metodo dataProvider.refreshItem(personWithNewData);")));
+        add(new ListItem(new Label("//Revisa el tema de Lazy load parece que no quedo muy claro")));
+        
+        var router_api = new Button("Router API");
+        router_api.addClickListener(event ->{
+            UI.getCurrent().navigate("router_api");
+        });
+        add(router_api);
     }
 }
