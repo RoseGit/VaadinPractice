@@ -42,6 +42,11 @@ public class MainView extends HorizontalLayout {
         });
         add(router_api);
         
+        var theming = new Button("Theming");
+        theming.addClickListener(event ->{
+            UI.getCurrent().navigate("temas");
+        });
+        
         sayHello.addClickShortcut(Key.ENTER);
 
         setMargin(true);
@@ -52,6 +57,7 @@ public class MainView extends HorizontalLayout {
         add(forms_databinding);
         add(data_list_with_grid);
         add(router_api);
+        add(theming);
     }
 
 }
